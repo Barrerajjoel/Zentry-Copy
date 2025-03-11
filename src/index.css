@@ -6,7 +6,7 @@ body {
     background-color: #dfdff0;
     font-family: "General Sans", sans-serif;
   }
-    @theme {
+    @theme{
     /* Font families */
     --font-zentry: "zentry", "sans-serif";
     --font-general: "general", "sans-serif";
