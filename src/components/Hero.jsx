@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useState } from "react";
 
 const Hero = () => {
@@ -10,15 +10,23 @@ const Hero = () => {
   const totalVideos = 3;
 
   const nextVidRef = useRef(null);
-  const handleVideoLoad = () => {
+  const mainVideoRef = useRef(null);
+  
+  // Log when currentIndex changes
+  useEffect(() => {
+    console.log(`Current video index changed to: ${currentIndex}`);
+  }, [currentIndex]);
+
+  const handleVideoLoad = (videoType, index) => {
+    console.log(`Video loaded: ${videoType} - Index: ${index}`);
     setLoadedVideos((prev) => prev + 1);
   };
 
   const upcomingVideoIndex = (currentIndex % totalVideos) + 1;
   const handleMiniVidClick = () => {
     setHasClicked(true);
+    console.log(`Changing from video ${currentIndex} to video ${upcomingVideoIndex}`);
     setCurrentIndex(upcomingVideoIndex);
-    console.log("clicked");
   };
 
   const getVideoSrc = (index) => {
@@ -44,28 +52,28 @@ const Hero = () => {
                 muted
                 id="current-video"
                 className="size-64 origin-center scale-150 object-cover object-center"
-                onLoadedData={handleVideoLoad}
+                onLoadedData={() => handleVideoLoad('Mini Preview', upcomingVideoIndex)}
               />
             </div>
           </div>
-          <video ref={nextVidRef}
+          <video 
             src={getVideoSrc(currentIndex)}
             loop
             muted
             id="next-video"
             className="absolute-center invisible absolute z-20 size-64 object-cover object-center"
-            onLoadedData={handleVideoLoad}
-            />
-            <video
-            src={getVideoSrc(
-                currentIndex === totalVideos - 1 ? 1 : currentIndex
-              )}
-              autoPlay
-              loop
-              muted
-              className="absolute left-0 top-0 size-full object-cover object-center"
-              onLoadedData={handleVideoLoad}
-            />
+            onLoadedData={() => handleVideoLoad('Next Video', currentIndex)}
+          />
+          <video
+            ref={mainVideoRef}
+            src={getVideoSrc(currentIndex === totalVideos - 1 ? 1 : currentIndex)}
+            autoPlay
+            loop
+            muted
+            className="absolute left-0 top-0 size-full object-cover object-center"
+            onLoadedData={() => handleVideoLoad('Main Video', currentIndex === totalVideos - 1 ? 1 : currentIndex)}
+            onPlay={() => console.log(`Now playing main video: ${currentIndex === totalVideos - 1 ? 1 : currentIndex}`)}
+          />
         </div>
         <h1 className="font-zentry">
             Gaming
